@@ -53,13 +53,15 @@ done
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT%{_glroot}/{bin,dev} $RPM_BUILD_ROOT/etc/{sysconfig/rc-inetd,cron.hourly}
+install -d $RPM_BUILD_ROOT%{_glroot}/{bin,dev} $RPM_BUILD_ROOT/etc/{sysconfig/rc-inetd,cron.daily}
 install -d $RPM_BUILD_ROOT%{_datadir}/%{name}
 rm -Rf bin/sources
 install bin/* $RPM_BUILD_ROOT%{_glroot}/bin
 cp -Rf sitebot site ftp-data etc lib $RPM_BUILD_ROOT%{_glroot}
 install %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/%{name}.conf
-install %{SOURCE3} $RPM_BUILD_ROOT/etc/cron.hourly/%{name}
+install %{SOURCE2} $RPM_BUILD_ROOT/etc/sysconfig/rc-inetd/%{name}
+install %{SOURCE3} $RPM_BUILD_ROOT/etc/cron.daily/%{name}
+install create_server_key.sh $RPM_BUILD_ROOT%{_datadir}/%{name}
 for i in sh cat grep unzip wc find ls bash mkdir rmdir rm mv cp awk ln basename dirname head tail cut tr wc sed date sleep touch gzip zip; do
 	install `which $i` $RPM_BUILD_ROOT%{_glroot}/bin
 done
@@ -72,8 +74,6 @@ sort | uniq | while read lib; do
 	fi
 done
 echo "/lib" > $RPM_BUILD_ROOT%{_glroot}%{_sysconfdir}/ld.so.conf
-cp %{SOURCE2} $RPM_BUILD_ROOT/etc/sysconfig/rc-inetd/ftpd
-install create_server_key.sh $RPM_BUILD_ROOT%{_datadir}/%{name}
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -100,7 +100,7 @@ else
 	echo "Type \"/etc/rc.d/init.d/rc-inetd start\" to start inet server" 1>&2
 fi
 echo "If you want change default listen port from 2121 
-	do it in /etc/services in line glftpd line"
+  do it in /etc/services in line glftpd line and /etc/sysconfig/rc-inetd/glftpd"
 
 %postun
 if [ "$1" = "0" -a -f /var/lock/subsys/rc-inetd ]; then
@@ -115,7 +115,7 @@ fi
 %attr(755,root,root) %{_datadir}/%{name}/create_server_key.sh
 %config(noreplace) %verify(not size mtime md5) %attr(640,root,root) %{_sysconfdir}/%{name}.conf
 %attr(750,root,root) /etc/cron.daily/%{name}
-%attr(640,root,root) /etc/sysconfig/rc-inetd/ftpd
+%attr(640,root,root) /etc/sysconfig/rc-inetd/glftpd
 %dir %{_glroot}
 %dir %{_glroot}/bin
 %dir %{_glroot}%{_sysconfdir}
