@@ -33,7 +33,7 @@ use.
 
 %description -l pl
 glFtpD jest darmowym serwerem FTP dla Linuxa, FreeBSD, Sun Solaris, i
-wielu innych platform. Ma wiele opcji, i jest latwy do skonfigurowania
+wielu innych platform. Ma wiele opcji, i jest ³atwy do skonfigurowania
 i u¿ywania.
 
 %define		_glroot			/home/services/glftpd
