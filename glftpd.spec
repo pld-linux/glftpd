@@ -1,8 +1,11 @@
+#TODO
+# - add %config(noreplace) to some files
+
 Summary:	glFtpD is a free FTP Daemon
 Summary(pl):	glFtpD jest darmowym serwerem FTP
 Name:		glftpd
 Version:	1.32
-Release:	0.1
+Release:	0.9
 License:	Freeware
 Group:		Daemons
 Source0:	http://glftpd.coding-slaves.com/files/distributions/LNX/%{name}-LNX_%{version}.tgz
@@ -24,19 +27,6 @@ BuildRequires:	grep
 BuildRequires:	coreutils
 BuildRequires:	pdksh
 Provides:	ftpserver
-Obsoletes:	proftpd-standalone
-Obsoletes:	proftpd-inetd
-Obsoletes:	ftpserver
-Obsoletes:	anonftp
-Obsoletes:	bftpd
-Obsoletes:	ftpd-BSD
-Obsoletes:	heimdal-ftpd
-Obsoletes:	linux-ftpd
-Obsoletes:	muddleftpd
-Obsoletes:	pure-ftpd
-Obsoletes:	troll-ftpd
-Obsoletes:	vsftpd
-Obsoletes:	wu-ftpd
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
@@ -46,7 +36,7 @@ use.
 
 %description -l pl
 glFtpD jest darmowym serwerem FTP dla Linuxa, FreeBSD, Sun Solaris, i
-wielu innych platform. Ma wile opcji, i jest latwy do skonfigurowania
+wielu innych platform. Ma wiele opcji, i jest latwy do skonfigurowania
 i u¿ywania.
 
 %define         _glroot         /home/services/glftpd
@@ -93,19 +83,27 @@ rm -rf $RPM_BUILD_ROOT
 
 %post
 chroot $RPM_BUILD_ROOT%{_glroot} /bin/ldconfig
+if [ ! -f $RPM_BUILD_ROOT%{_glroot}/dev/null ]; then
 mknod -m666 $RPM_BUILD_ROOT%{_glroot}/dev/null c 1 3
+fi
+if [ ! -f $RPM_BUILD_ROOT%{_glroot}/dev/zero ]; then
 mknod -m666 $RPM_BUILD_ROOT%{_glroot}/dev/zero c 1 5
+fi
 if [ ! -f /var/lib/openssl/certs/ftpd-dsa.pem ]; then
 	cd /var/lib/openssl/certs/
 	%{_datadir}/%{name}/create_server_key.sh `hostname -f`
 	cd /
 fi
-
+if [ -f /etc/services ] && ! grep -q "glftpd" /etc/services; then
+	echo "glftpd	2121/tcp" >> /etc/services
+fi
 if [ -f /var/lock/subsys/rc-inetd ]; then
 	/etc/rc.d/init.d/rc-inetd reload 1>&2
 else
 	echo "Type \"/etc/rc.d/init.d/rc-inetd start\" to start inet server" 1>&2
 fi
+echo "If you want change default listen port from 2121 
+	do it in /etc/services in line glftpd line"
 
 %postun
 if [ "$1" = "0" -a -f /var/lock/subsys/rc-inetd ]; then
