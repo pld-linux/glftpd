@@ -1,0 +1,9 @@
+SERVICE_NAME=ftp
+SOCK_TYPE=stream
+PROTOCOL=tcp
+PORT=21
+FLAGS="nowait REUSE"
+USER=root
+SERVER=tcpd
+DAEMON=/home/services/glftpd/bin/glftpd
+DAEMONARGS="-l -i -e -o -n 1 -r/etc/glftpd.conf -z cert=/var/lib/openssl/certs/ftpd-dsa.pem -s/home/services/glftpd/bin/glstrings.bin"

@@ -1,0 +1,2 @@
+#!/bin/sh
+/home/services/glftpd/bin/reset -r /etc/glftpd.conf
