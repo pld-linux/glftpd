@@ -1,6 +1,3 @@
-#TODO
-# - add %config(noreplace) to some files
-
 Summary:	glFtpD is a free FTP Daemon
 Summary(pl):	glFtpD jest darmowym serwerem FTP
 Name:		glftpd
@@ -117,8 +114,8 @@ fi
 %dir %{_datadir}/%{name}
 %attr(755,root,root) %{_datadir}/%{name}/create_server_key.sh
 %config(noreplace) %verify(not size mtime md5) %attr(640,root,root) %{_sysconfdir}/%{name}.conf
-/etc/cron.hourly/%{name}
-/etc/sysconfig/rc-inetd/ftpd
+%attr(750,root,root) /etc/cron.daily/%{name}
+%attr(640,root,root) /etc/sysconfig/rc-inetd/ftpd
 %dir %{_glroot}
 %dir %{_glroot}/bin
 %dir %{_glroot}%{_sysconfdir}
@@ -131,6 +128,6 @@ fi
 %dir %{_glroot}/sitebot
 %attr(755,root,root) %{_glroot}/bin/*
 %attr(755,root,root) %{_glroot}/lib/*
-%{_glroot}%{_sysconfdir}/*
-%{_glroot}/ftp-data/*/*
-%{_glroot}/sitebot/*
+%config(noreplace) %verify(not size mtime md5) %{_glroot}%{_sysconfdir}/*
+%config(noreplace) %verify(not size mtime md5) %{_glroot}/ftp-data/*/*
+%config(noreplace) %verify(not size mtime md5) %{_glroot}/sitebot/*
