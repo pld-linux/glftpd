@@ -11,6 +11,8 @@ Source1:	%{name}.conf
 Source2:	%{name}.inetd
 Source3:	%{name}.cron
 URL:		http://www.glftpd.com/
+PreReq:		rc-inetd
+Requires(post):	openssl-tools
 BuildRequires:	awk
 BuildRequires:	gzip
 BuildRequires:	zip
@@ -21,6 +23,7 @@ BuildRequires:	unzip
 BuildRequires:	grep
 BuildRequires:	coreutils
 BuildRequires:	pdksh
+Provides:	ftpserver
 Obsoletes:	proftpd-standalone
 Obsoletes:	proftpd-inetd
 Obsoletes:	ftpserver
@@ -115,7 +118,7 @@ fi
 %doc changelog README UPGRADING docs/*
 %dir %{_datadir}/%{name}
 %attr(755,root,root) %{_datadir}/%{name}/create_server_key.sh
-%attr(640,root,root) %{_sysconfdir}/%{name}.conf
+%config(noreplace) %verify(not size mtime md5) %attr(640,root,root) %{_sysconfdir}/%{name}.conf
 /etc/cron.hourly/%{name}
 /etc/sysconfig/rc-inetd/ftpd
 %dir %{_glroot}
@@ -126,7 +129,7 @@ fi
 %dir %{_glroot}/ftp-data/*
 %dir %{_glroot}/lib
 %dir %{_glroot}/site
-%dir %{_glroot}/site/incoming
+%attr(777,root,root) %dir %{_glroot}/site/incoming
 %dir %{_glroot}/sitebot
 %attr(755,root,root) %{_glroot}/bin/*
 %attr(755,root,root) %{_glroot}/lib/*
