@@ -39,7 +39,7 @@ glFtpD jest darmowym serwerem FTP dla Linuxa, FreeBSD, Sun Solaris, i
 wielu innych platform. Ma wiele opcji, i jest latwy do skonfigurowania
 i u¿ywania.
 
-%define         _glroot         /home/services/glftpd
+%define		_glroot			/home/services/glftpd
 %define		_noautoprovfiles	%{_glroot}/bin/{sh,cat,grep,unzip,wc,find,ls,bash,mkdir,rmdir,rm,mv,cp,awk,ln,basename,dirname,head,tail,cut,tr,wc,sed,date,sleep,touch,gzip,zip}
 %define		_noautoprovfiles	%{_glroot}/lib/*
 
@@ -48,9 +48,9 @@ i u¿ywania.
 
 %build
 for cfile in `ls bin/sources/*.c`; do
-    base=`basename "${cfile%.c}"`
-    [ -f "bin/$base" ] && rm -f "bin/$base"
-    %{__cc} %{rpmcflags} %{rpmldflags} -o bin/$base $cfile
+	base=`basename "${cfile%.c}"`
+	[ -f "bin/$base" ] && rm -f "bin/$base"
+	%{__cc} %{rpmcflags} %{rpmldflags} -o bin/$base $cfile
 done
 
 
@@ -70,9 +70,9 @@ install /sbin/ldconfig $RPM_BUILD_ROOT%{_glroot}/bin
 
 ldd $RPM_BUILD_ROOT%{_glroot}/bin/* | grep "=>" | sed 's:^.* => \(/[^ ]*\).*$:\1:' |
 sort | uniq | while read lib; do
-    if [ -f "$lib" ]; then
-        cp -f "$lib" $RPM_BUILD_ROOT%{_glroot}/lib
-    fi
+	if [ -f "$lib" ]; then
+		cp -f "$lib" $RPM_BUILD_ROOT%{_glroot}/lib
+	fi
 done
 echo "/lib" > $RPM_BUILD_ROOT%{_glroot}%{_sysconfdir}/ld.so.conf
 cp %{SOURCE2} $RPM_BUILD_ROOT/etc/sysconfig/rc-inetd/ftpd
@@ -84,10 +84,10 @@ rm -rf $RPM_BUILD_ROOT
 %post
 chroot $RPM_BUILD_ROOT%{_glroot} /bin/ldconfig
 if [ ! -f $RPM_BUILD_ROOT%{_glroot}/dev/null ]; then
-mknod -m666 $RPM_BUILD_ROOT%{_glroot}/dev/null c 1 3
+	mknod -m666 $RPM_BUILD_ROOT%{_glroot}/dev/null c 1 3
 fi
 if [ ! -f $RPM_BUILD_ROOT%{_glroot}/dev/zero ]; then
-mknod -m666 $RPM_BUILD_ROOT%{_glroot}/dev/zero c 1 5
+	mknod -m666 $RPM_BUILD_ROOT%{_glroot}/dev/zero c 1 5
 fi
 if [ ! -f /var/lib/openssl/certs/ftpd-dsa.pem ]; then
 	cd /var/lib/openssl/certs/
