@@ -1,7 +1,7 @@
-SERVICE_NAME=ftp
+SERVICE_NAME=glftpd
 SOCK_TYPE=stream
 PROTOCOL=tcp
-PORT=21
+PORT=2121
 FLAGS="nowait REUSE"
 USER=root
 SERVER=tcpd
