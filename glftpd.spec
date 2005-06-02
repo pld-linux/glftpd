@@ -18,7 +18,6 @@ BuildRequires:	gzip
 BuildRequires:	zip
 BuildRequires:	sed
 BuildRequires:	bash
-BuildRequires:	findutils
 BuildRequires:	unzip
 BuildRequires:	grep
 BuildRequires:	coreutils
