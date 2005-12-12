@@ -11,17 +11,17 @@ Source1:	%{name}.conf
 Source2:	%{name}.inetd
 Source3:	%{name}.cron
 URL:		http://www.glftpd.com/
-PreReq:		rc-inetd
-Requires(post):	openssl-tools
 BuildRequires:	awk
-BuildRequires:	gzip
-BuildRequires:	zip
-BuildRequires:	sed
 BuildRequires:	bash
-BuildRequires:	unzip
-BuildRequires:	grep
 BuildRequires:	coreutils
+BuildRequires:	grep
+BuildRequires:	gzip
 BuildRequires:	pdksh
+BuildRequires:	sed
+BuildRequires:	unzip
+BuildRequires:	zip
+Requires(post):	openssl-tools
+Requires:	rc-inetd
 Provides:	ftpserver
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
@@ -98,7 +98,7 @@ if [ -f /var/lock/subsys/rc-inetd ]; then
 else
 	echo "Type \"/etc/rc.d/init.d/rc-inetd start\" to start inet server" 1>&2
 fi
-echo "If you want change default listen port from 2121 
+echo "If you want change default listen port from 2121
   do it in /etc/services in line glftpd line and /etc/sysconfig/rc-inetd/glftpd"
 
 %postun
@@ -112,9 +112,9 @@ fi
 %doc changelog README UPGRADING docs/*
 %dir %{_datadir}/%{name}
 %attr(755,root,root) %{_datadir}/%{name}/create_server_key.sh
-%config(noreplace) %verify(not size mtime md5) %attr(640,root,root) %{_sysconfdir}/%{name}.conf
+%config(noreplace) %verify(not md5 mtime size) %attr(640,root,root) %{_sysconfdir}/%{name}.conf
 %attr(750,root,root) /etc/cron.daily/%{name}
-%attr(640,root,root) /etc/sysconfig/rc-inetd/glftpd
+%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/sysconfig/rc-inetd/glftpd
 %dir %{_glroot}
 %dir %{_glroot}/bin
 %dir %{_glroot}%{_sysconfdir}
@@ -127,6 +127,6 @@ fi
 %dir %{_glroot}/sitebot
 %attr(755,root,root) %{_glroot}/bin/*
 %attr(755,root,root) %{_glroot}/lib/*
-%config(noreplace) %verify(not size mtime md5) %{_glroot}%{_sysconfdir}/*
-%config(noreplace) %verify(not size mtime md5) %{_glroot}/ftp-data/*/*
-%config(noreplace) %verify(not size mtime md5) %{_glroot}/sitebot/*
+%config(noreplace) %verify(not md5 mtime size) %{_glroot}%{_sysconfdir}/*
+%config(noreplace) %verify(not md5 mtime size) %{_glroot}/ftp-data/*/*
+%config(noreplace) %verify(not md5 mtime size) %{_glroot}/sitebot/*
