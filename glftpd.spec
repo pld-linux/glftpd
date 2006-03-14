@@ -11,13 +11,10 @@ Source1:	%{name}.conf
 Source2:	%{name}.inetd
 Source3:	%{name}.cron
 URL:		http://www.glftpd.com/
-BuildRequires:	awk
 BuildRequires:	bash
 BuildRequires:	coreutils
-BuildRequires:	grep
-BuildRequires:	gzip
 BuildRequires:	pdksh
-BuildRequires:	sed
+BuildRequires:	rpmbuild(macros) >= 1.268
 BuildRequires:	unzip
 BuildRequires:	zip
 Requires(post):	openssl-tools
@@ -93,17 +90,14 @@ fi
 if [ -f /etc/services ] && ! grep -q "glftpd" /etc/services; then
 	echo "glftpd	2121/tcp" >> /etc/services
 fi
-if [ -f /var/lock/subsys/rc-inetd ]; then
-	/etc/rc.d/init.d/rc-inetd reload 1>&2
-else
-	echo "Type \"/etc/rc.d/init.d/rc-inetd start\" to start inet server" 1>&2
-fi
 echo "If you want change default listen port from 2121
   do it in /etc/services in line glftpd line and /etc/sysconfig/rc-inetd/glftpd"
 
+%service -q rc-inetd reload
+
 %postun
-if [ "$1" = "0" -a -f /var/lock/subsys/rc-inetd ]; then
-	/etc/rc.d/init.d/rc-inetd reload 1>&2
+if [ "$1" = "0" ]; then
+	%service -q rc-inetd reload
 fi
 
 
