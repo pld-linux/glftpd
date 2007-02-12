@@ -1,5 +1,5 @@
 Summary:	glFtpD is a free FTP Daemon
-Summary(pl):	glFtpD jest darmowym serwerem FTP
+Summary(pl.UTF-8):   glFtpD jest darmowym serwerem FTP
 Name:		glftpd
 Version:	1.32
 Release:	0.9
@@ -27,10 +27,10 @@ glFtpD is a free FTP Daemon for Linux, FreeBSD, Sun Solaris, and many
 other platforms. It has numerous features, and is easy to setup and
 use.
 
-%description -l pl
+%description -l pl.UTF-8
 glFtpD jest darmowym serwerem FTP dla Linuksa, FreeBSD, Sun Solaris, i
-wielu innych platform. Ma wiele opcji, i jest ≥atwy do skonfigurowania
-i uøywania.
+wielu innych platform. Ma wiele opcji, i jest ≈Çatwy do skonfigurowania
+i u≈ºywania.
 
 %define		_glroot			/home/services/glftpd
 %define		_noautoprovfiles	%{_glroot}/bin/{sh,cat,grep,unzip,wc,find,ls,bash,mkdir,rmdir,rm,mv,cp,awk,ln,basename,dirname,head,tail,cut,tr,wc,sed,date,sleep,touch,gzip,zip}
