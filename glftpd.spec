@@ -1,5 +1,5 @@
 Summary:	glFtpD is a free FTP Daemon
-Summary(pl.UTF-8):   glFtpD jest darmowym serwerem FTP
+Summary(pl.UTF-8):	glFtpD jest darmowym serwerem FTP
 Name:		glftpd
 Version:	1.32
 Release:	0.9
