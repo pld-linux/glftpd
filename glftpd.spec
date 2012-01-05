@@ -1,26 +1,32 @@
 Summary:	glFtpD is a free FTP Daemon
 Summary(pl.UTF-8):	glFtpD jest darmowym serwerem FTP
 Name:		glftpd
-Version:	1.32
-Release:	0.9
+Version:	2.01
+Release:	0.1
 License:	Freeware
 Group:		Daemons
-Source0:	http://glftpd.coding-slaves.com/files/distributions/LNX/%{name}-LNX_%{version}.tgz
-# Source0-md5:	45913cf02c0c754f054eba9cfa213987
+Source0:	http://www.glftpd.dk/files/%{name}-LNX_%{version}.tgz
+# Source0-md5:	f15628798b1f6cfe71a781f035cfaa28
 Source1:	%{name}.conf
 Source2:	%{name}.inetd
 Source3:	%{name}.cron
-URL:		http://www.glftpd.com/
+URL:		http://www.glftpd.dk/
 BuildRequires:	bash
 BuildRequires:	coreutils
-BuildRequires:	pdksh
 BuildRequires:	rpmbuild(macros) >= 1.268
 BuildRequires:	unzip
 BuildRequires:	zip
 Requires(post):	openssl-tools
+BuildRequires:	rpmbuild(macros) >= 1.583
 Requires:	rc-inetd
 Provides:	ftpserver
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
+
+%define		_glroot			/home/services/glftpd
+%define		_noautoprovfiles	%{_glroot}/lib/*
+
+# copied libpthread.so.0 has symbols missing: errno, h_errno, __resp
+%define		skip_post_check_so	libpthread.so.0
 
 %description
 glFtpD is a free FTP Daemon for Linux, FreeBSD, Sun Solaris, and many
@@ -32,36 +38,33 @@ glFtpD jest darmowym serwerem FTP dla Linuksa, FreeBSD, Sun Solaris, i
 wielu innych platform. Ma wiele opcji, i jest łatwy do skonfigurowania
 i używania.
 
-%define		_glroot			/home/services/glftpd
-%define		_noautoprovfiles	%{_glroot}/bin/{sh,cat,grep,unzip,wc,find,ls,bash,mkdir,rmdir,rm,mv,cp,awk,ln,basename,dirname,head,tail,cut,tr,wc,sed,date,sleep,touch,gzip,zip}
-%define		_noautoprovfiles	%{_glroot}/lib/*
-
 %prep
 %setup -q -n %{name}-LNX_%{version}
 
+mv bin/sources .
+
 %build
-for cfile in `ls bin/sources/*.c`; do
-	base=`basename "${cfile%.c}"`
+for cfile in $(ls sources/*.c); do
+	ldflags=
+	base=$(basename "${cfile%.c}")
 	[ -f "bin/$base" ] && rm -f "bin/$base"
 	%{__cc} %{rpmcflags} %{rpmldflags} -o bin/$base $cfile
 done
-
 
 %install
 rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT%{_glroot}/{bin,dev} $RPM_BUILD_ROOT/etc/{sysconfig/rc-inetd,cron.daily}
 install -d $RPM_BUILD_ROOT%{_datadir}/%{name}
-rm -Rf bin/sources
-install bin/* $RPM_BUILD_ROOT%{_glroot}/bin
+install -p bin/* $RPM_BUILD_ROOT%{_glroot}/bin
 cp -Rf sitebot site ftp-data etc lib $RPM_BUILD_ROOT%{_glroot}
-install %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/%{name}.conf
-install %{SOURCE2} $RPM_BUILD_ROOT/etc/sysconfig/rc-inetd/%{name}
-install %{SOURCE3} $RPM_BUILD_ROOT/etc/cron.daily/%{name}
-install create_server_key.sh $RPM_BUILD_ROOT%{_datadir}/%{name}
+cp -p %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/%{name}.conf
+cp -p %{SOURCE2} $RPM_BUILD_ROOT/etc/sysconfig/rc-inetd/%{name}
+install -p %{SOURCE3} $RPM_BUILD_ROOT/etc/cron.daily/%{name}
+install -p create_server_key.sh $RPM_BUILD_ROOT%{_datadir}/%{name}
 for i in sh cat grep unzip wc find ls bash mkdir rmdir rm mv cp awk ln basename dirname head tail cut tr wc sed date sleep touch gzip zip; do
-	install `which $i` $RPM_BUILD_ROOT%{_glroot}/bin
+	install -p `which $i` $RPM_BUILD_ROOT%{_glroot}/bin
 done
-install /sbin/ldconfig $RPM_BUILD_ROOT%{_glroot}/bin
+install -p /sbin/ldconfig $RPM_BUILD_ROOT%{_glroot}/bin
 
 ldd $RPM_BUILD_ROOT%{_glroot}/bin/* | grep "=>" | sed 's:^.* => \(/[^ ]*\).*$:\1:' |
 sort | uniq | while read lib; do
@@ -75,12 +78,12 @@ echo "/lib" > $RPM_BUILD_ROOT%{_glroot}%{_sysconfdir}/ld.so.conf
 rm -rf $RPM_BUILD_ROOT
 
 %post
-chroot $RPM_BUILD_ROOT%{_glroot} /bin/ldconfig
-if [ ! -f $RPM_BUILD_ROOT%{_glroot}/dev/null ]; then
-	mknod -m666 $RPM_BUILD_ROOT%{_glroot}/dev/null c 1 3
+chroot %{_glroot} /bin/ldconfig
+if [ ! -f %{_glroot}/dev/null ]; then
+	mknod -m666 %{_glroot}/dev/null c 1 3
 fi
-if [ ! -f $RPM_BUILD_ROOT%{_glroot}/dev/zero ]; then
-	mknod -m666 $RPM_BUILD_ROOT%{_glroot}/dev/zero c 1 5
+if [ ! -f %{_glroot}/dev/zero ]; then
+	mknod -m666 %{_glroot}/dev/zero c 1 5
 fi
 if [ ! -f /var/lib/openssl/certs/ftpd-dsa.pem ]; then
 	cd /var/lib/openssl/certs/
