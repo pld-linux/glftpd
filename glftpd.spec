@@ -25,8 +25,8 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 %define		_glroot			/home/services/glftpd
 %define		_noautoprovfiles	%{_glroot}/lib/*
 
-# copied libpthread.so.0 has symbols missing: errno, h_errno, __resp
-%define		skip_post_check_so	libpthread.so.0
+# copied libraries have symbols missing: errno, h_errno, __resp
+%define		skip_post_check_so	libpthread.so.0 librt.so.1 libm.so.6 libcrypt.so.1
 
 %description
 glFtpD is a free FTP Daemon for Linux, FreeBSD, Sun Solaris, and many
@@ -102,7 +102,6 @@ echo "If you want change default listen port from 2121
 if [ "$1" = "0" ]; then
 	%service -q rc-inetd reload
 fi
-
 
 %files
 %defattr(644,root,root,755)
