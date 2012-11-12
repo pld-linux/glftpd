@@ -1,8 +1,11 @@
+# NOTE
+# - the "source" contains partial source code, daemon is still 32bit ELF
+#   altho there's 64bit binary available from homepage
 Summary:	glFtpD is a free FTP Daemon
 Summary(pl.UTF-8):	glFtpD jest darmowym serwerem FTP
 Name:		glftpd
 Version:	2.01
-Release:	0.1
+Release:	0.2
 License:	Freeware
 Group:		Daemons
 Source0:	http://www.glftpd.dk/files/%{name}-LNX_%{version}.tgz
@@ -13,11 +16,10 @@ Source3:	%{name}.cron
 URL:		http://www.glftpd.dk/
 BuildRequires:	bash
 BuildRequires:	coreutils
-BuildRequires:	rpmbuild(macros) >= 1.268
+BuildRequires:	rpmbuild(macros) >= 1.583
 BuildRequires:	unzip
 BuildRequires:	zip
 Requires(post):	openssl-tools
-BuildRequires:	rpmbuild(macros) >= 1.583
 Requires:	rc-inetd
 Provides:	ftpserver
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
